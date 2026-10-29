@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bitcoin Dashboard · Realistic UI/UX</title>
+  <!-- Font Awesome 6 (free) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0c10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 1.5rem;
+    }
+
+    /* main dashboard card */
+    .dashboard {
+      max-width: 1360px;
+      width: 100%;
+      background: #0f141c;
+      border-radius: 2rem;
+      padding: 1.8rem 2rem;
+      border: 1px solid #1e2a3a;
+      box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(247, 147, 26, 0.15);
+    }
+
+    /* ----- NAVIGATION ----- */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+
+    .logo-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(145deg, #f7931a, #f5a623);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #0a0c10;
+      box-shadow: 0 8px 16px -6px rgba(247, 147, 26, 0.4);
+    }
+
+    .logo-text {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #ffffff 0%, #b0c0d8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-menu {
+      display: flex;
+      gap: 0.3rem;
+      background: #161f2c;
+      padding: 0.25rem;
+      border-radius: 3rem;
+      border: 1px solid #243040;
+    }
+
+    .nav-menu a {
+      text-decoration: none;
+      color: #8a99b0;
+      font-weight: 500;
+      font-size: 0.85rem;
+      padding: 0.55rem 1.3rem;
+      border-radius: 3rem;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .nav-menu a.active {
+      background: #27364b;
+      color: #f7931a;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.6);
+    }
+
+    .nav-menu a:hover:not(.active) {
+      color: #e0e8f0;
+    }
+
+    .user-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      background: #161f2c;
+      padding: 0.35rem 1rem 0.35rem 0.45rem;
+      border-radius: 3rem;
+      border: 1px solid #243040;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .user-badge:hover {
+      border-color: #f7931a;
+      background: #1a2536;
+    }
+
+    .user-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #f7931a, #f5a623);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #0a0c10;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .user-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #e0e8f0;
+    }
+
+    /* ----- MAIN GRID ----- */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1.6fr 1.1fr;
+      gap: 1.2rem;
+      margin-bottom: 1.2rem;
+    }
+
+    /* card base */
+    .card {
+      background: #121a26;
+      border-radius: 1.8rem;
+      padding: 1.5rem;
+      border: 1px solid #1e2a3a;
+      transition: border-color 0.2s, transform 0.15s;
+    }
+
+    .card:hover {
+      border-color: #2e4058;
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.3rem;
+    }
+
+    .card-top h3 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #8a99b0;
+    }
+
+    .card-top i {
+      color: #4d637e;
+      font-size: 1rem;
+    }
+
+    /* ----- BALANCE CARD ----- */
+    .balance-btc {
+      font-size: 2.6rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+
+    .balance-btc span {
+      font-size: 1.4rem;
+      color: #6d7f99;
+      font-weight: 500;
+    }
+
+    .balance-change {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      color: #2ecc71;
+      margin-top: 0.3rem;
+      font-weight: 500;
+    }
+
+    .balance-change i {
+      font-size: 0.7rem;
+    }
+
+    .balance-usd {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #b0c0d8;
+      margin-top: 0.4rem;
+    }
+
+    .balance-actions {
+      display: flex;
+      gap: 0.7rem;
+      margin-top: 1.6rem;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 3rem;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 0.7rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      flex: 1;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-primary {
+      background: #f7931a;
+      color: #0a0c10;
+      box-shadow: 0 8px 16px -6px rgba(247, 147, 26, 0.4);
+    }
+
+    .btn-primary:hover {
+      background: #f9a83b;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: #1d2938;
+      color: #d0dcea;
+      border: 1px solid #2e4058;
+    }
+
+    .btn-secondary:hover {
+      background: #253345;
+      border-color: #4d637e;
+    }
+
+    /* ----- CHART CARD ----- */
+    .chart-area {
+      height: 160px;
+      width: 100%;
+      margin: 0.3rem 0 0.6rem;
+    }
+
+    .chart-svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .chart-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: #6d7f99;
+    }
+
+    .badge-up {
+      color: #2ecc71;
+      background: rgba(46, 204, 113, 0.1);
+      padding: 0.15rem 0.7rem;
+      border-radius: 2rem;
+      font-weight: 600;
+    }
+
+    .market-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    .stat {
+      background: #0e1520;
+      border-radius: 1.2rem;
+      padding: 0.8rem 1rem;
+      border: 1px solid #1e2a3a;
+    }
+
+    .stat-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #6d7f99;
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .stat-value {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .stat-value small {
+      font-size: 0.65rem;
+      font-weight: 500;
+      color: #8a99b0;
+      margin-left: 0.3rem;
+    }
+
+    /* ----- TRANSACTIONS ----- */
+    .tx-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tx-item {
+      display: flex;
+      align-items: center;
+      padding: 0.9rem 0;
+      border-bottom: 1px solid #1a2536;
+    }
+
+    .tx-item:last-child {
+      border-bottom: none;
+    }
+
+    .tx-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: #1a2536;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 0.8rem;
+      color: #f7931a;
+      font-size: 0.95rem;
+    }
+
+    .tx-icon.received {
+      color: #2ecc71;
+    }
+
+    .tx-info {
+      flex: 1;
+    }
+
+    .tx-name {
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: #e0e8f0;
+      margin-bottom: 0.15rem;
+    }
+
+    .tx-time {
+      font-size: 0.65rem;
+      color: #6d7f99;
+    }
+
+    .tx-amt {
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    .tx-amt.negative {
+      color: #e74c3c;
+    }
+
+    .tx-amt.positive {
+      color: #2ecc71;
+    }
+
+    /* ----- BOTTOM SECTION ----- */
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1.8fr;
+      gap: 1.2rem;
+    }
+
+    .send-bar {
+      display: flex;
+      align-items: center;
+      background: #0e1520;
+      border-radius: 3rem;
+      padding: 0.25rem 0.25rem 0.25rem 1.2rem;
+      border: 1px solid #243040;
+      margin: 1rem 0;
+      transition: border-color 0.2s;
+    }
+
+    .send-bar:focus-within {
+      border-color: #f7931a;
+    }
+
+    .send-bar input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #ffffff;
+      font-size: 0.9rem;
+      flex: 1;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .send-bar input::placeholder {
+      color: #5a6f8a;
+    }
+
+    .send-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #f7931a;
+      border: none;
+      color: #0a0c10;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+
+    .send-btn:hover {
+      background: #f9a83b;
+      transform: scale(1.03);
+    }
+
+    .contacts {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .contact {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.3rem;
+      cursor: pointer;
+    }
+
+    .contact-avatar {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: #1d2938;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: #b0c0d8;
+      font-size: 1rem;
+      transition: all 0.15s;
+      border: 2px solid transparent;
+    }
+
+    .contact-avatar:hover {
+      border-color: #f7931a;
+      background: #27364b;
+    }
+
+    .contact-label {
+      font-size: 0.65rem;
+      color: #8a99b0;
+      font-weight: 500;
+    }
+
+    .add-contact {
+      background: #121a26;
+      border: 2px dashed #2e4058;
+      color: #6d7f99;
+    }
+
+    .add-contact i {
+      font-size: 0.9rem;
+    }
+
+    /* market right card */
+    .market-overview {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .market-pair {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .pair-name {
+      font-size: 0.75rem;
+      color: #8a99b0;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+    }
+
+    .pair-price {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+    }
+
+    .pair-change {
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-left: 0.5rem;
+    }
+
+    .dominance {
+      background: #0e1520;
+      border-radius: 1.2rem;
+      padding: 1rem 1.2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid #1e2a3a;
+    }
+
+    .dominance-left {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+
+    .dominance-left i {
+      font-size: 1.4rem;
+      color: #f7931a;
+    }
+
+    .dominance-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #e0e8f0;
+    }
+
+    .dominance-sub {
+      font-size: 0.65rem;
+      color: #6d7f99;
+    }
+
+    .dominance-value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #f7931a;
+    }
+
+    /* toast */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #1a2536;
+      border: 1px solid #f7931a;
+      color: #ffffff;
+      padding: 0.7rem 1.8rem;
+      border-radius: 3rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      opacity: 0;
+      transition: all 0.3s;
+      pointer-events: none;
+      z-index: 999;
+      box-shadow: 0 12px 24px rgba(0,0,0,0.7);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* responsive */
+    @media (max-width: 1150px) {
+      .main-grid {
+        grid-template-columns: 1fr 1.5fr;
+      }
+      .main-grid .card:last-child {
+        grid-column: span 2;
+      }
+      .bottom-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 780px) {
+      .dashboard {
+        padding: 1.2rem;
+      }
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+      .main-grid .card:last-child {
+        grid-column: auto;
+      }
+      .navbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .nav-menu {
+        justify-content: center;
+      }
+      .user-badge {
+        align-self: flex-end;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="dashboard">
+
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <div class="logo">
+      <div class="logo-icon">₿</div>
+      <span class="logo-text">Bitcoin</span>
+    </div>
+
+    <nav class="nav-menu">
+      <a href="#" class="active" data-tab="dashboard">Dashboard</a>
+      <a href="#" data-tab="wallet">Wallet</a>
+      <a href="#" data-tab="market">Market</a>
+    </nav>
+
+    <div class="user-badge" onclick="showToast('Profile · Alex M.')">
+      <div class="user-avatar">A</div>
+      <span class="user-name">Alex M.</span>
+      <i class="fas fa-chevron-down" style="font-size: 0.65rem; color: #6d7f99;"></i>
+    </div>
+  </header>
+
+  <!-- MAIN CARDS -->
+  <div class="main-grid">
+
+    <!-- Balance -->
+    <div class="card">
+      <div class="card-top">
+        <h3>Total balance</h3>
+        <i class="fas fa-wallet"></i>
+      </div>
+      <div class="balance-btc">2.487 <span>BTC</span></div>
+      <div class="balance-change">
+        <i class="fas fa-arrow-trend-up"></i> +3.2% (24h)
+      </div>
+      <div class="balance-usd">≈ $147,320.45 USD</div>
+      <div class="balance-actions">
+        <button class="btn btn-primary" onclick="showToast('Send Bitcoin · opening dialog')">
+          <i class="fas fa-paper-plane"></i> Send
+        </button>
+        <button class="btn btn-secondary" onclick="showToast('Receive Bitcoin · QR ready')">
+          <i class="fas fa-qrcode"></i> Receive
+        </button>
+      </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="card">
+      <div class="card-top">
+        <h3>BTC / USD</h3>
+        <i class="fas fa-chart-line"></i>
+      </div>
+      <div class="chart-area">
+        <svg class="chart-svg" viewBox="0 0 420 120" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#f7931a" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#f7931a" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <!-- area fill -->
+          <path d="M0,85 Q35,70 65,75 T125,45 T185,60 T245,30 T305,40 T365,18 T420,25 L420,120 L0,120 Z" fill="url(#chartGrad)"/>
+          <!-- line -->
+          <path d="M0,85 Q35,70 65,75 T125,45 T185,60 T245,30 T305,40 T365,18 T420,25" stroke="#f7931a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="chart-meta">
+        <span>Today · Live</span>
+        <span class="badge-up"><i class="fas fa-caret-up"></i> 2.45%</span>
+      </div>
+      <div class="market-stats">
+        <div class="stat">
+          <div class="stat-label"><i class="fas fa-arrow-down"></i> 24h low</div>
+          <div class="stat-value">$58,210</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label"><i class="fas fa-arrow-up"></i> 24h high</div>
+          <div class="stat-value">$60,340</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label"><i class="fas fa-chart-bar"></i> Volume</div>
+          <div class="stat-value">$32.8B</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label"><i class="fas fa-bolt"></i> Dominance</div>
+          <div class="stat-value">52.4%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transactions -->
+    <div class="card">
+      <div class="card-top">
+        <h3>Recent activity</h3>
+        <i class="fas fa-history"></i>
+      </div>
+      <div class="tx-list">
+        <div class="tx-item">
+          <div class="tx-icon"><i class="fas fa-arrow-up"></i></div>
+          <div class="tx-info">
+            <div class="tx-name">Sent to Mike</div>
+            <div class="tx-time">Today, 09:42</div>
+          </div>
+          <div class="tx-amt negative">-0.0124 ₿</div>
+        </div>
+        <div class="tx-item">
+          <div class="tx-icon received"><i class="fas fa-arrow-down"></i></div>
+          <div class="tx-info">
+            <div class="tx-name">Received from Sarah</div>
+            <div class="tx-time">Yesterday, 18:20</div>
+          </div>
+          <div class="tx-amt positive">+0.0450 ₿</div>
+        </div>
+        <div class="tx-item">
+          <div class="tx-icon"><i class="fas fa-arrow-up"></i></div>
+          <div class="tx-info">
+            <div class="tx-name">Exchange withdrawal</div>
+            <div class="tx-time">Mar 12, 11:05</div>
+          </div>
+          <div class="tx-amt negative">-0.0032 ₿</div>
+        </div>
+        <div class="tx-item">
+          <div class="tx-icon received"><i class="fas fa-arrow-down"></i></div>
+          <div class="tx-info">
+            <div class="tx-name">Mining reward</div>
+            <div class="tx-time">Mar 10, 04:15</div>
+          </div>
+          <div class="tx-amt positive">+0.0089 ₿</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM SECTION -->
+  <div class="bottom-grid">
+
+    <!-- Quick send -->
+    <div class="card">
+      <div class="card-top">
+        <h3>Quick send</h3>
+        <i class="fas fa-bolt"></i>
+      </div>
+      <div class="send-bar">
+        <input type="text" id="sendInput" placeholder="Bitcoin address or username">
+        <button class="send-btn" onclick="handleSend()"><i class="fas fa-arrow-right"></i></button>
+      </div>
+      <div class="contacts">
+        <div class="contact" onclick="showToast('Send to Mike')">
+          <div class="contact-avatar">M</div>
+          <div class="contact-label">Mike</div>
+        </div>
+        <div class="contact" onclick="showToast('Send to Sarah')">
+          <div class="contact-avatar">S</div>
+          <div class="contact-label">Sarah</div>
+        </div>
+        <div class="contact" onclick="showToast('Send to David')">
+          <div class="contact-avatar">D</div>
+          <div class="contact-label">David</div>
+        </div>
+        <div class="contact" onclick="showToast('Send to Emma')">
+          <div class="contact-avatar">E</div>
+          <div class="contact-label">Emma</div>
+        </div>
+        <div class="contact" onclick="showToast('Add new contact')">
+          <div class="contact-avatar add-contact"><i class="fas fa-plus"></i></div>
+          <div class="contact-label">Add</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Market overview -->
+    <div class="card">
+      <div class="card-top">
+        <h3>Market overview</h3>
+        <i class="fas fa-globe"></i>
+      </div>
+      <div class="market-overview">
+        <div class="market-pair">
+          <div>
+            <div class="pair-name">BTC / USD</div>
+            <div class="pair-price">$59,245 <span class="pair-change" style="color: #2ecc71;"><i class="fas fa-caret-up"></i> 2.4%</span></div>
+          </div>
+          <div>
+            <div class="pair-name">ETH / USD</div>
+            <div class="pair-price" style="font-size: 1.1rem;">$3,120 <span class="pair-change" style="color: #e74c3c;"><i class="fas fa-caret-down"></i> 0.8%</span></div>
+          </div>
+        </div>
+        <div class="dominance">
+          <div class="dominance-left">
+            <i class="fas fa-coins"></i>
+            <div>
+              <div class="dominance-label">Bitcoin dominance</div>
+              <div class="dominance-sub">Market share</div>
+            </div>
+          </div>
+          <div class="dominance-value">52.4%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- toast notification -->
+<div class="toast" id="toast">Action completed</div>
+
+<script>
+  /* ----- toast helper ----- */
+  let toastTimeout;
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => toast.classList.remove('show'), 2200);
+  }
+
+  /* ----- send handler ----- */
+  function handleSend() {
+    const input = document.getElementById('sendInput');
+    const value = input.value.trim();
+    if (!value) {
+      showToast('Please enter a Bitcoin address');
+      return;
+    }
+    showToast(`Sending to ${value.substring(0, 10)}…`);
+    input.value = '';
+  }
+
+  /* enter key support */
+  document.getElementById('sendInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') handleSend();
+  });
+
+  /* ----- nav menu switching (visual only) ----- */
+  document.querySelectorAll('.nav-menu a').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      document.querySelectorAll('.nav-menu a').forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
+      if (link.dataset.tab !== 'dashboard') {
+        showToast(`Navigating to ${link.textContent}`);
+      } else {
+        showToast('Dashboard refreshed');
+      }
+    });
+  });
+
+  /* ----- live price flicker (simulated realism) ----- */
+  let basePrice = 59245;
+  setInterval(() => {
+    const delta = Math.floor(Math.random() * 81) - 40; // -40..40
+    const newPrice = basePrice + delta;
+    const priceEl = document.querySelector('.pair-price');
+    if (priceEl) {
+      // update only the BTC price line while keeping the ETH part untouched
+      priceEl.childNodes[0].nodeValue = `$${newPrice.toLocaleString()} `;
+      basePrice = newPrice;
+    }
+  }, 4500);
+
+  /* ----- interactive hover on cards ----- */
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('mouseenter', () => {
+      card.style.transform = 'translateY(-2px)';
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = 'translateY(0)';
+    });
+  });
+
+  /* ----- welcome message ----- */
+  window.addEventListener('load', () => {
+    setTimeout(() => showToast('Welcome back, Alex · BTC +2.4%'), 600);
+  });
+</script>
+
+</body>
+</html>
